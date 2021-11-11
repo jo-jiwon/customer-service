@@ -1,0 +1,138 @@
+html,
+body {
+  background: #f1f1f1 !important;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  font-family: noto Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+p,
+ol,
+ul,
+li,
+th,
+td,
+h1,
+h2,
+h3,
+span,
+a {
+  padding: 0;
+  margin: 0 !important;
+  text-decoration: none !important;
+  list-style: none;
+  font-weight: normal;
+}
+
+h2 {
+  color: #3a3a3a;
+  position: relative;
+  font-weight: bold !important;
+  padding: 1rem 0 2rem;
+  z-index: 1 !important;
+}
+
+.title-bg {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 130px;
+  height: 15px;
+  z-index: -9999 !important;
+  background: #e9ec1760 !important;
+  border-right: 1px solid #bbb;
+  border-bottom: 1px solid #bbb;
+}
+
+/* 화면사이즈 700 */
+.width700 {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* 화면사이즈 500 */
+.width500 {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* 버튼 스타일 */
+.btn-wrap {
+  margin: 3rem 0 0;
+}
+
+.btnSize {
+  width: 200px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 5px !important;
+}
+
+.btnBg {
+  background: #3d3c59 !important;
+  color: #fff !important;
+}
+
+.btnLine {
+  border: 1px solid #3d3c59 !important;
+  color: #333 !important;
+}
+
+/* 테이블 스타일 */
+table {
+  border-collapse: separate !important;
+  border-spacing: 0 5px !important;
+  border-radius: 5px;
+}
+
+table th {
+  font-weight: bold;
+  text-align: center;
+  width: 150px;
+  vertical-align: middle;
+  height: 60px !important;
+  background: rgb(100, 100, 100) !important;
+  color: #fff;
+  border: none;
+  border-radius: 5px 0 0 5px;
+}
+
+table td {
+  vertical-align: middle;
+  background: #fff !important;
+  border: 1px solid #d9dfeb;
+  border-radius: 0 5px 5px 0;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* 목록 스타일 */
+.card {
+  border-radius: 5px !important;
+  background: #f9f9fc !important;
+  border: 1px solid #d9dfeb !important;
+}
+
+.card:hover {
+  box-shadow: 6px 6px 20px #ccc;
+  transition: all ease 0.5s;
+}
+
+.card-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
