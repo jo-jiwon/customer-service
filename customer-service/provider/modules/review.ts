@@ -1,6 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { events } from "../../common/data";
-import { CheckItem } from "./check";
 
 // redux store(리덕스 저장소)에 하나의 state를 관리하고 처리할 수 있는 모듈
 // slice에는  state와 reducer가 있음
@@ -19,52 +17,73 @@ export interface ReviewItem {
   createdTime: number;
 }
 
+export interface ReviewPage {
+  data: ReviewItem[];
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  pageSize: number;
+  isLast: boolean;
+}
+
 // state 타입
 export interface ReviewState {
   data: ReviewItem[]; // 리뷰 아이템 배열
   isFetched: boolean; // 서버에서 데이터를 받아온지에 대한 정보
+  isAddCompleted?: boolean; // 데이터 추가가 완료되었는지 여부
+  isRemoveCompleted?: boolean; // 데이터 삭제가 완료되었는지 여부
+  isModifyCompleted?: boolean; // 데이터 수정이 완료되었는지 여부
+  totalElements?: number;
+  totalPages: number;
+  page: number;
+  pageSize: number;
+  isLast?: boolean;
 }
 
 const initialState: ReviewState = {
   data: [
-    {
-      id: 3,
-      title: "눈성형",
-      description: "눈성형짱잘됨",
-      reviewPhotoUrl: "https://via.placeholder.com/150/54176f",
-      fileType: "image/jpeg",
-      fileName: "placeholder",
-      clinic: "아이웰",
-      price: "97만원",
-      keyword: "눈",
-      createdTime: new Date().getTime(),
-    },
-    {
-      id: 2,
-      title: "눈성형",
-      description: "눈성형짱잘됨",
-      reviewPhotoUrl: "https://via.placeholder.com/150/54176f",
-      fileType: "image/jpeg",
-      fileName: "placeholder",
-      clinic: "아이웰",
-      price: "97만원",
-      keyword: "눈",
-      createdTime: new Date().getTime(),
-    },
-    {
-      id: 1,
-      title: "눈성형",
-      description: "눈성형짱잘됨",
-      reviewPhotoUrl: "https://via.placeholder.com/150/54176f",
-      fileType: "image/jpeg",
-      fileName: "placeholder",
-      clinic: "아이웰",
-      price: "97만원",
-      keyword: "눈",
-      createdTime: new Date().getTime(),
-    },
+    // {
+    //   id: 3,
+    //   title: "눈성형",
+    //   description: "눈성형짱잘됨",
+    //   reviewPhotoUrl: "https://via.placeholder.com/150/54176f",
+    //   fileType: "image/jpeg",
+    //   fileName: "placeholder",
+    //   clinic: "아이웰",
+    //   price: "97만원",
+    //   keyword: "눈",
+    //   createdTime: new Date().getTime(),
+    // },
+    // {
+    //   id: 2,
+    //   title: "눈성형",
+    //   description: "눈성형짱잘됨",
+    //   reviewPhotoUrl: "https://via.placeholder.com/150/54176f",
+    //   fileType: "image/jpeg",
+    //   fileName: "placeholder",
+    //   clinic: "아이웰",
+    //   price: "97만원",
+    //   keyword: "눈",
+    //   createdTime: new Date().getTime(),
+    // },
+    // {
+    //   id: 1,
+    //   title: "눈성형",
+    //   description: "눈성형짱잘됨",
+    //   reviewPhotoUrl: "https://via.placeholder.com/150/54176f",
+    //   fileType: "image/jpeg",
+    //   fileName: "placeholder",
+    //   clinic: "아이웰",
+    //   price: "97만원",
+    //   keyword: "눈",
+    //   createdTime: new Date().getTime(),
+    // },
   ],
   isFetched: false,
+  page: 0,
+  // pageSize: photoPageSize ? +photoPageSize : 8,
+  pageSize: 3,
+  totalPages: 0,
 };
 
 // slice 생성
@@ -77,15 +96,23 @@ const reviewSlice = createSlice({
     addReview: (state, action: PayloadAction<ReviewItem>) => {
       const review = action.payload;
       state.data.unshift(review);
-      //   state.isAddCompleted = true; // 추가가 되었음으로 표시
+      state.isAddCompleted = true; // 추가가 되었음으로 표시
     },
+    // payload 없는 reducer
+    // completed 관련된 속성을 삭제함(undefined 상태)
+    initialCompleted: (state) => {
+      delete state.isAddCompleted;
+      delete state.isRemoveCompleted;
+      delete state.isModifyCompleted;
+    },
+
     removeReview: (state, action: PayloadAction<number>) => {
       const id = action.payload;
       state.data.splice(
         state.data.findIndex((item) => item.id === id),
         1
       );
-      // state.isRemoveCompleted=true; // 삭제 되었음을 표시
+      state.isRemoveCompleted = true; // 삭제 되었음을 표시
     },
     modifyReview: (state, action: PayloadAction<ReviewItem>) => {
       // 생성해서 넘긴 객체
@@ -97,12 +124,63 @@ const reviewSlice = createSlice({
         reviewItem.title = modifyItem.title;
         reviewItem.description = modifyItem.description;
         reviewItem.reviewPhotoUrl = modifyItem.reviewPhotoUrl;
+        reviewItem.fileName = modifyItem.fileName;
+        reviewItem.fileType = modifyItem.fileType;
       }
-      // state.isModifyCompleted = true; // 변경되었음을 표시
+      state.isModifyCompleted = true; // 변경되었음을 표시
     },
+    // initialPhotoItem: (state, action: PayloadAction<ReviewItem>) => {
+    //   const photo = action.payload;
+    //   // 백엔드에서 받아온 데이터
+    //   state.data = [{ ...photo }];
+    // },
+    // payload값으로 state를 초기화하는 reducer 필요함
+    initialReview: (state, action: PayloadAction<ReviewItem[]>) => {
+      const reviews = action.payload;
+      //   // 백엔드에서 받아온 데이터
+      state.data = reviews;
+      //   // 데이터를 받아옴으로 값을 남김
+      state.isFetched = true;
+    },
+    addTotalpages: (state) => {
+      state.totalPages++;
+    },
+    // // payload값으로 state를 초기화하는 reducer 필요함
+    // initialPagedPhoto: (state, action: PayloadAction<ReviewPage>) => {
+    //   // 백엔드에서 받아온 데이터
+    //   // 컨텐트
+    //   state.data = action.payload.data;
+    //   // 페이징 데이터
+    //   state.totalElements = action.payload.totalElements;
+    //   state.totalPages = action.payload.totalPages;
+    //   state.page = action.payload.page;
+    //   state.pageSize = action.payload.pageSize;
+    //   state.isLast = action.payload.isLast;
+    //   // 데이터를 받아옴으로 값을 남김
+    //   state.isFetched = true;
+    // },
+    // initialNextPhoto: (state, action: PayloadAction<ReviewPage>) => {
+    //   // 백엔드에서 받아온 데이터를 기존데이터 뒤로 합침
+    //   // 컨텐트
+    //   state.data = state.data.concat(action.payload.data);
+    //   // 페이징 데이터
+    //   state.totalElements = action.payload.totalElements;
+    //   state.totalPages = action.payload.totalPages;
+    //   state.page = action.payload.page;
+    //   state.pageSize = action.payload.pageSize;
+    //   state.isLast = action.payload.isLast;
+    //   // 데이터를 받아옴으로 값을 남김
+    //   state.isFetched = true;
+    // },
   },
 });
 
-export const { addReview, removeReview, modifyReview } = reviewSlice.actions;
+export const {
+  addReview,
+  removeReview,
+  modifyReview,
+  initialCompleted,
+  initialReview,
+} = reviewSlice.actions;
 
 export default reviewSlice.reducer;

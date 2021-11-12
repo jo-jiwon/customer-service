@@ -35,15 +35,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/event.js"
     ],
-    "/event/detail/[id]": [
+    "/reviews": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/event/detail/[id].js"
+      "static/chunks/pages/reviews.js"
     ],
-    "/event/reserve/[id]": [
+    "/reviews/detail/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/event/reserve/[id].js"
+      "static/chunks/pages/reviews/detail/[id].js"
     ]
   },
   "ampFirstPages": []

@@ -34,7 +34,7 @@ const Appbar = () => {
                 </Link>
               </Nav.Item>
               <Nav.Item className="me-3 my-2">
-                <Link href="/review">
+                <Link href="/reviews">
                   <a className="text-dark">시술후기</a>
                 </Link>
               </Nav.Item>

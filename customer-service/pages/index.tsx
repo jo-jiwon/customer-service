@@ -3,11 +3,13 @@ import { Card, Button } from "react-bootstrap";
 import EventsStyles from "../styles/Event.module.css";
 import ReviewStyles from "../styles/Reviews.module.css";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
-import { RootState } from "../provider";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../provider";
 import { Image } from "react-bootstrap";
 import axios from "axios";
+import { useEffect } from "react";
 import { getTimeString } from "../lib/string";
+import { requestFetchReviews } from "../middleware/modules/review";
 
 interface EventData {
   albumId: number;
@@ -24,8 +26,16 @@ interface IndexProp {
 const Index = ({ events }: IndexProp) => {
   const review = useSelector((state: RootState) => state.review);
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
-  console.log(events);
+  // 컴포넌트가 마운팅되는 시점에 실행
+  useEffect(() => {
+    if (!review.isFetched) {
+      // 서버에서 데이터를 받아오는 action을 디스패치함
+      dispatch(requestFetchReviews());
+    }
+  }, [dispatch, review.isFetched]);
+
   return (
     <div>
       {/* event-wrap */}
@@ -94,7 +104,7 @@ const Index = ({ events }: IndexProp) => {
               <button
                 className="btnSize btn btnBg my-auto"
                 onClick={() => {
-                  router.push("/review/check");
+                  router.push("/reviews/check");
                 }}
               >
                 <i className="bi bi-plus-lg me-1"></i>
@@ -110,7 +120,7 @@ const Index = ({ events }: IndexProp) => {
               className="card d-flex"
               style={{ cursor: "pointer" }}
               onClick={() => {
-                router.push(`/review/detail/${item.id}`);
+                router.push(`/reviews/detail/${item.id}`);
               }}
             >
               <div className="card-body d-flex">
@@ -156,7 +166,7 @@ const Index = ({ events }: IndexProp) => {
             className="btnSize btn btnLine"
             style={{ width: "200px" }}
             onClick={() => {
-              router.push("/review");
+              router.push("/reviews");
             }}
           >
             시술후기 목록 가기

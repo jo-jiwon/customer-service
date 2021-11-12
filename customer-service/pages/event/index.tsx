@@ -17,7 +17,6 @@ interface IndexProp {
 }
 
 const Event = ({ events }: IndexProp) => {
-  console.log(events);
   return (
     <div className=" event-wrap">
       <h2 className="title">

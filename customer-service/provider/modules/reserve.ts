@@ -27,7 +27,6 @@ const reserveSlice = createSlice({
     addReserve: (state, action: PayloadAction<ReserveItem>) => {
       const reserve = action.payload;
       console.log(reserve);
-      // const reserveItem = state.data.unshift(reserve)
       state.data.unshift(reserve);
     },
   },
