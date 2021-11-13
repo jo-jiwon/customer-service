@@ -1,22 +1,39 @@
 import { useRouter } from "next/router";
-import { useRef } from "react";
-import { ReviewItem, addReview } from "../../provider/modules/review";
+import { useEffect, useRef } from "react";
+import { ReviewItem } from "../../provider/modules/review";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../provider";
-import { requestAddReview } from "../../middleware/modules/review";
+import { requestAddReviewNext } from "../../middleware/modules/review";
 
 const ReviewCreate = () => {
-  const router = useRouter();
-  const reviewData = useSelector((state: RootState) => state.review.data);
-  const dispatch = useDispatch<AppDispatch>();
-
+  // 입력 폼 ref 객체
   const titleInput = useRef<HTMLInputElement>(null);
   const descTxta = useRef<HTMLTextAreaElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const keywordSelect = useRef<HTMLSelectElement>(null);
 
+  // 리뷰 데이터 배열 가져오기
+  const reviewData = useSelector((state: RootState) => state.review.data);
+  // 가격 데이터 가져오기
   const checkPrice = useSelector((state: RootState) => state.check.price);
+  // 병원 데이터 가져오기
   const checkClinic = useSelector((state: RootState) => state.check.clinic);
+  // 추가 완료 여부 state 변경감지 및 값 가져오기
+  const isAddCompleted = useSelector(
+    (state: RootState) => state.review.isAddCompleted
+  );
+
+  // dispatch 함수 만들기
+  const dispatch = useDispatch<AppDispatch>();
+
+  // 객체 가져오기
+  const router = useRouter();
+
+  // isCompleted 값이 변경되면 처리
+  useEffect(() => {
+    // true이면 화면이동
+    isAddCompleted && router.push("/reviews");
+  }, [isAddCompleted, router, dispatch]);
 
   const handleAddClick = () => {
     if (fileInput.current?.files?.length) {
@@ -40,9 +57,12 @@ const ReviewCreate = () => {
         // dispatch(addReview(item));
 
         // saga action
-        dispatch(requestAddReview(item));
+        // dispatch(requestAddReview(item)); // 전체조회
+        // dispatch(requestAddReviewPaging(item)); // 넘버 페이징
 
-        router.push("/reviews");
+        dispatch(requestAddReviewNext(item)); // 더보기 페이징
+
+        // router.push("/reviews");
       };
       reader.readAsDataURL(imageFile);
     }

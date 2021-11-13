@@ -3,6 +3,7 @@ import React from "react";
 import styles from "./layout.module.css";
 import AppBar from "./appbar";
 import FooterBar from "./footer";
+import AlertStack from "./alert/alertStack";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -18,7 +19,10 @@ export default function Layout({ children }: LayoutProps) {
       <header className={styles.header}>
         <AppBar />
       </header>
-      <main className={styles.main}>{children}</main>
+      <main className={styles.main}>
+        {children}
+        <AlertStack />
+      </main>
       <footer>
         <FooterBar />
       </footer>

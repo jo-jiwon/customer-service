@@ -40,49 +40,14 @@ export interface ReviewState {
   isLast?: boolean;
 }
 
+// const reviewPageSize = localStorage.getItem("review_page_size");
+
 const initialState: ReviewState = {
-  data: [
-    // {
-    //   id: 3,
-    //   title: "눈성형",
-    //   description: "눈성형짱잘됨",
-    //   reviewPhotoUrl: "https://via.placeholder.com/150/54176f",
-    //   fileType: "image/jpeg",
-    //   fileName: "placeholder",
-    //   clinic: "아이웰",
-    //   price: "97만원",
-    //   keyword: "눈",
-    //   createdTime: new Date().getTime(),
-    // },
-    // {
-    //   id: 2,
-    //   title: "눈성형",
-    //   description: "눈성형짱잘됨",
-    //   reviewPhotoUrl: "https://via.placeholder.com/150/54176f",
-    //   fileType: "image/jpeg",
-    //   fileName: "placeholder",
-    //   clinic: "아이웰",
-    //   price: "97만원",
-    //   keyword: "눈",
-    //   createdTime: new Date().getTime(),
-    // },
-    // {
-    //   id: 1,
-    //   title: "눈성형",
-    //   description: "눈성형짱잘됨",
-    //   reviewPhotoUrl: "https://via.placeholder.com/150/54176f",
-    //   fileType: "image/jpeg",
-    //   fileName: "placeholder",
-    //   clinic: "아이웰",
-    //   price: "97만원",
-    //   keyword: "눈",
-    //   createdTime: new Date().getTime(),
-    // },
-  ],
+  data: [],
   isFetched: false,
   page: 0,
-  // pageSize: photoPageSize ? +photoPageSize : 8,
-  pageSize: 3,
+  // pageSize: reviewPageSize ? +reviewPageSize : 6,
+  pageSize: 2,
   totalPages: 0,
 };
 
@@ -95,6 +60,7 @@ const reviewSlice = createSlice({
     // // Payload로 item객체를 받음
     addReview: (state, action: PayloadAction<ReviewItem>) => {
       const review = action.payload;
+      console.log(review);
       state.data.unshift(review);
       state.isAddCompleted = true; // 추가가 되었음으로 표시
     },
@@ -142,36 +108,37 @@ const reviewSlice = createSlice({
       //   // 데이터를 받아옴으로 값을 남김
       state.isFetched = true;
     },
-    addTotalpages: (state) => {
-      state.totalPages++;
+    // addTotalpages: (state) => {
+    //   state.totalPages++;
+    // },
+    // 숫자 페이징
+    initialPagedReview: (state, action: PayloadAction<ReviewPage>) => {
+      //   // 백엔드에서 받아온 데이터
+      //   // 컨텐트
+      state.data = action.payload.data;
+      //   // 페이징 데이터
+      state.totalElements = action.payload.totalElements;
+      state.totalPages = action.payload.totalPages;
+      state.page = action.payload.page;
+      state.pageSize = action.payload.pageSize;
+      state.isLast = action.payload.isLast;
+      //   // 데이터를 받아옴으로 값을 남김
+      state.isFetched = true;
     },
-    // // payload값으로 state를 초기화하는 reducer 필요함
-    // initialPagedPhoto: (state, action: PayloadAction<ReviewPage>) => {
-    //   // 백엔드에서 받아온 데이터
-    //   // 컨텐트
-    //   state.data = action.payload.data;
-    //   // 페이징 데이터
-    //   state.totalElements = action.payload.totalElements;
-    //   state.totalPages = action.payload.totalPages;
-    //   state.page = action.payload.page;
-    //   state.pageSize = action.payload.pageSize;
-    //   state.isLast = action.payload.isLast;
-    //   // 데이터를 받아옴으로 값을 남김
-    //   state.isFetched = true;
-    // },
-    // initialNextPhoto: (state, action: PayloadAction<ReviewPage>) => {
-    //   // 백엔드에서 받아온 데이터를 기존데이터 뒤로 합침
-    //   // 컨텐트
-    //   state.data = state.data.concat(action.payload.data);
-    //   // 페이징 데이터
-    //   state.totalElements = action.payload.totalElements;
-    //   state.totalPages = action.payload.totalPages;
-    //   state.page = action.payload.page;
-    //   state.pageSize = action.payload.pageSize;
-    //   state.isLast = action.payload.isLast;
-    //   // 데이터를 받아옴으로 값을 남김
-    //   state.isFetched = true;
-    // },
+    // 더보기 페이징
+    initialNextReview: (state, action: PayloadAction<ReviewPage>) => {
+      //   // 백엔드에서 받아온 데이터를 기존데이터 뒤로 합침
+      //   // 컨텐트
+      state.data = state.data.concat(action.payload.data);
+      //   // 페이징 데이터
+      state.totalElements = action.payload.totalElements;
+      state.totalPages = action.payload.totalPages;
+      state.page = action.payload.page;
+      state.pageSize = action.payload.pageSize;
+      state.isLast = action.payload.isLast;
+      //   // 데이터를 받아옴으로 값을 남김
+      state.isFetched = true;
+    },
   },
 });
 
@@ -181,6 +148,8 @@ export const {
   modifyReview,
   initialCompleted,
   initialReview,
+  initialPagedReview,
+  initialNextReview,
 } = reviewSlice.actions;
 
 export default reviewSlice.reducer;

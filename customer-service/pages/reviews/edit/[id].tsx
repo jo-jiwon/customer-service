@@ -1,13 +1,15 @@
 import { useRouter } from "next/router";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "../../../components/layout";
+import { requestModifyReview } from "../../../middleware/modules/review";
 import { AppDispatch, RootState } from "../../../provider";
 import { modifyReview, ReviewItem } from "../../../provider/modules/review";
 import ReviewStyles from "../../../styles/Reviews.module.css";
 
 const ReviewEdit = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
   const id = router.query.id as string;
@@ -16,15 +18,21 @@ const ReviewEdit = () => {
     state.review.data.find((item) => item.id === +id)
   );
 
-  const dispatch = useDispatch<AppDispatch>();
+  const isModifyCompleted = useSelector(
+    (state: RootState) => state.review.isModifyCompleted
+  );
 
   const [url, setUrl] = useState<string | undefined>(
     reviewItem?.reviewPhotoUrl
   );
 
+  const titleInput = useRef<HTMLInputElement>(null);
   const descTxta = useRef<HTMLTextAreaElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
-  const titleInput = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    isModifyCompleted && router.push("/reviews");
+  }, [isModifyCompleted, router]);
 
   const changeFile = () => {
     if (fileInput.current?.files?.length) {
@@ -39,6 +47,7 @@ const ReviewEdit = () => {
   };
 
   const handleSaveClick = () => {
+    // 파일이 있을 때 처리
     if (fileInput.current?.files?.length) {
       const imageFile = fileInput.current.files[0];
       const reader = new FileReader();
@@ -51,13 +60,18 @@ const ReviewEdit = () => {
           item.title = titleInput.current ? titleInput.current.value : "";
           item.description = descTxta.current?.value;
           item.reviewPhotoUrl = reader.result ? reader.result.toString() : "";
+          item.fileType = imageFile.type;
+          item.fileName = imageFile.name;
 
           // reducer로 state 수정 및 목록으로 이동
           saveItem(item);
         }
       };
+
       reader.readAsDataURL(imageFile);
-    } else {
+    }
+    // 파일이 없을 때 처리
+    else {
       if (reviewItem) {
         // 기존데이터 카피
         const item = { ...reviewItem };
@@ -70,9 +84,14 @@ const ReviewEdit = () => {
       }
     }
   };
+
   const saveItem = (item: ReviewItem) => {
-    dispatch(modifyReview(item));
-    router.push("/reviews");
+    // reducer로 state 수정 및 목록으로 이동
+    // dispatch(modifyReview(item));
+
+    // saga action
+    dispatch(requestModifyReview(item));
+    // router.push("/reviews");
   };
   return (
     <div className="width700">

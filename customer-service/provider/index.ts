@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import reviewReducer from "./modules/review";
 import checkReducer from "./modules/check";
 import reserveReducer from "./modules/reserve";
+import alertReducer from "../provider/modules/alert";
 
 // 최상위 사가
 import rootSaga from "../middleware";
@@ -19,6 +20,7 @@ export const store = configureStore({
     review: reviewReducer,
     check: checkReducer,
     reserve: reserveReducer,
+    alert: alertReducer,
   },
 
   // redux store(dispatcher)에 미들웨어 적용

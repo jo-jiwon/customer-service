@@ -1,40 +1,43 @@
-import router, { useRouter } from "next/router";
-import Layout from "../../../components/layout";
-import ReviewStyles from "../../../styles/Reviews.module.css";
+import { useRouter } from "next/router";
 import "bootstrap-icons/font/bootstrap-icons.json";
-import { GetServerSideProps } from "next";
-import context from "react-bootstrap/esm/AccordionContext";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../provider";
 import { removeReview } from "../../../provider/modules/review";
 import { getTimeString } from "../../../lib/string";
-
-// interface ReviewData {
-//   id: number;
-//   title: string;
-//   description?: string;
-//   reviewPhotoUrl: string;
-//   clinic: string;
-//   price: string;
-//   keyword: string;
-// }
-
-// interface DetailProp {
-//   review: ReviewData;
-// }
+import { requestRemoveReviewNext } from "../../../middleware/modules/review";
+import { useEffect } from "react";
 
 const ReviewDetail = () => {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   const id = router.query.id as string;
-  // console.log(id);
+  console.log(id);
 
-  let reviewItem = useSelector((state: RootState) =>
+  const reviewItem = useSelector((state: RootState) =>
     state.review.data.find((item) => item.id === +id)
   );
 
-  const dispatch = useDispatch<AppDispatch>();
+  // 삭제 여부 감지 및 가져오기
+  const isRemoveCompleted = useSelector(
+    (state: RootState) => state.review.isRemoveCompleted
+  );
+
+  useEffect(() => {
+    isRemoveCompleted && router.push("/reviews");
+  }, [isRemoveCompleted, router]);
+
+  const handleDeleteClick = () => {
+    // 리덕스 action
+    // dispatch(removeReview(+id));
+
+    // saga action
+    // dispatch(requestRemoveReview(+id)); // 전체 조회일 때
+    // dispatch(requestRemoveReviewPaging(+id)); // 숫자 페이징일때
+    dispatch(requestRemoveReviewNext(+id)); // 더보기 페이징일때
+
+    // router.push("/reviews");
+  };
 
   return (
     <div className="width700">
@@ -100,8 +103,7 @@ const ReviewDetail = () => {
         <button
           className="btnSize btn btnLine"
           onClick={() => {
-            dispatch(removeReview(+id));
-            router.push("/reviews");
+            handleDeleteClick();
           }}
         >
           삭제하기

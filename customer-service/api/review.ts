@@ -1,6 +1,13 @@
-// 서버하고 데이터 연동하는 api처리 목록
-
 import axios from "axios";
+
+export interface ReviewPagingResponse {
+  content: ReviewItemResponse[];
+  last: boolean;
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
 
 // 서버로 부터 받아오는 데이터 1건에 대한 타입
 export interface ReviewItemResponse {
@@ -22,7 +29,10 @@ export interface ReviewItemRequest {
   reviewPhotoUrl: string;
   fileType: string;
   fileName: string;
-  // createdTime: number;
+  clinic: string;
+  price: string;
+  keyword: string;
+  createdTime: number;
 }
 
 // process.env.변수명
@@ -34,6 +44,12 @@ const reviewApi = {
       `${process.env.NEXT_PUBLIC_API_BASE}/reviews`
     ),
 
+  // 페이징으로 GET
+  fetchPaging: (page: number, size: number) =>
+    axios.get<ReviewPagingResponse>(
+      `${process.env.NEXT_PUBLIC_API_BASE}/reviews/paging?page=${page}$size=${size}`
+    ),
+
   // POST
   add: (reviewItem: ReviewItemRequest) =>
     axios.post<ReviewItemResponse>(
@@ -42,15 +58,15 @@ const reviewApi = {
     ),
 
   // DELETE
-  // remove: (id: number) =>
-  //   axios.delete<boolean>(`${process.env.NEXT_PUBLIC_API_BASE}/reviews/${id}`),
+  remove: (id: number) =>
+    axios.delete<boolean>(`${process.env.NEXT_PUBLIC_API_BASE}/reviews/${id}`),
 
   // // PUT
-  // modify: (id: number, reviewItem: ReviewItemRequest) =>
-  //   axios.put<ReviewItemResponse>(
-  //     `${process.env.NEXT_PUBLIC_API_BASE}/reviews/${id}`,
-  //     reviewItem
-  //   ),
+  modify: (id: number, reviewItem: ReviewItemRequest) =>
+    axios.put<ReviewItemResponse>(
+      `${process.env.NEXT_PUBLIC_API_BASE}/reviews/${id}`,
+      reviewItem
+    ),
 };
 
 export default reviewApi;
