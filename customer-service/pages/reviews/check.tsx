@@ -114,7 +114,7 @@ const Check = () => {
           <button
             className="btnSize btn btnLine"
             onClick={() => {
-              router.push(`/event`);
+              router.push(`/reviews`);
             }}
           >
             취소

@@ -37,6 +37,10 @@ export interface ReviewItemRequest {
 
 // process.env.변수명
 const reviewApi = {
+  get: (id: number) =>
+    axios.get<ReviewItemResponse>(
+      `${process.env.NEXT_PUBLIC_API_BASE}/reviews/${id}`
+    ),
   // axios.get<응답데이터타입>(요청URL);
   // GET 요청URL HTTP/1.1
   fetch: () =>
@@ -47,7 +51,7 @@ const reviewApi = {
   // 페이징으로 GET
   fetchPaging: (page: number, size: number) =>
     axios.get<ReviewPagingResponse>(
-      `${process.env.NEXT_PUBLIC_API_BASE}/reviews/paging?page=${page}$size=${size}`
+      `${process.env.NEXT_PUBLIC_API_BASE}/reviews/paging?page=${page}&size=${size}`
     ),
 
   // POST

@@ -47,7 +47,7 @@ const initialState: ReviewState = {
   isFetched: false,
   page: 0,
   // pageSize: reviewPageSize ? +reviewPageSize : 6,
-  pageSize: 2,
+  pageSize: 6,
   totalPages: 0,
 };
 
@@ -112,19 +112,19 @@ const reviewSlice = createSlice({
     //   state.totalPages++;
     // },
     // 숫자 페이징
-    initialPagedReview: (state, action: PayloadAction<ReviewPage>) => {
-      //   // 백엔드에서 받아온 데이터
-      //   // 컨텐트
-      state.data = action.payload.data;
-      //   // 페이징 데이터
-      state.totalElements = action.payload.totalElements;
-      state.totalPages = action.payload.totalPages;
-      state.page = action.payload.page;
-      state.pageSize = action.payload.pageSize;
-      state.isLast = action.payload.isLast;
-      //   // 데이터를 받아옴으로 값을 남김
-      state.isFetched = true;
-    },
+    // initialPagedReview: (state, action: PayloadAction<ReviewPage>) => {
+    //   //   // 백엔드에서 받아온 데이터
+    //   //   // 컨텐트
+    //   state.data = action.payload.data;
+    //   //   // 페이징 데이터
+    //   state.totalElements = action.payload.totalElements;
+    //   state.totalPages = action.payload.totalPages;
+    //   state.page = action.payload.page;
+    //   state.pageSize = action.payload.pageSize;
+    //   state.isLast = action.payload.isLast;
+    //   //   // 데이터를 받아옴으로 값을 남김
+    //   state.isFetched = true;
+    // },
     // 더보기 페이징
     initialNextReview: (state, action: PayloadAction<ReviewPage>) => {
       //   // 백엔드에서 받아온 데이터를 기존데이터 뒤로 합침
@@ -148,7 +148,7 @@ export const {
   modifyReview,
   initialCompleted,
   initialReview,
-  initialPagedReview,
+  // initialPagedReview,
   initialNextReview,
 } = reviewSlice.actions;
 
