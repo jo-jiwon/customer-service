@@ -10,6 +10,7 @@ const initialState: CheckItem = {
   clinic: "",
 };
 
+// slice 생성
 const checkSlice = createSlice({
   name: "check", // slice의 이름(state이름)
   initialState, // 이 slice의 state 초기값

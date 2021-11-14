@@ -1,5 +1,5 @@
 import router from "next/router";
-import { useRef } from "react";
+import { MutableRefObject, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../provider";
 import { addCheck, CheckItem } from "../../provider/modules/check";
@@ -8,14 +8,14 @@ import EventsStyle from "../../styles/Event.module.css";
 // const id = router.query.id as string;
 
 const Check = () => {
-  const priceInput = useRef<HTMLInputElement>(null);
-  const clinicInput = useRef<HTMLInputElement>(null);
+  const priceInput = useRef() as MutableRefObject<HTMLInputElement>;
+  const clinicInput = useRef() as MutableRefObject<HTMLInputElement>;
   const dispatch = useDispatch<AppDispatch>();
 
   const createCheck = () => {
     const data: CheckItem = {
-      price: priceInput.current ? priceInput.current.value : "",
-      clinic: clinicInput.current ? clinicInput.current.value : "",
+      price: priceInput.current.value,
+      clinic: clinicInput.current.value,
     };
     dispatch(addCheck(data));
   };

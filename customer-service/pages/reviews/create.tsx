@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useRef } from "react";
 import { ReviewItem } from "../../provider/modules/review";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../provider";
@@ -7,10 +7,10 @@ import { requestAddReviewNext } from "../../middleware/modules/review";
 
 const ReviewCreate = () => {
   // 입력 폼 ref 객체
-  const titleInput = useRef<HTMLInputElement>(null);
-  const descTxta = useRef<HTMLTextAreaElement>(null);
-  const fileInput = useRef<HTMLInputElement>(null);
-  const keywordSelect = useRef<HTMLSelectElement>(null);
+  const titleInput = useRef() as MutableRefObject<HTMLInputElement>;
+  const descTxta = useRef() as MutableRefObject<HTMLTextAreaElement>;
+  const fileInput = useRef() as MutableRefObject<HTMLInputElement>;
+  const keywordSelect = useRef() as MutableRefObject<HTMLSelectElement>;
 
   // 리뷰 데이터 배열 가져오기
   const reviewData = useSelector((state: RootState) => state.review.data);
@@ -42,14 +42,14 @@ const ReviewCreate = () => {
       reader.onload = () => {
         const item: ReviewItem = {
           id: reviewData.length > 0 ? reviewData[0].id + 1 : 1,
-          title: titleInput.current ? titleInput.current.value : "",
+          title: titleInput.current.value,
           reviewPhotoUrl: reader.result ? reader.result.toString() : "",
           fileType: imageFile.type,
           fileName: imageFile.name,
-          description: descTxta.current?.value,
+          description: descTxta.current.value,
           clinic: checkClinic,
           price: checkPrice,
-          keyword: keywordSelect.current ? keywordSelect.current.value : "",
+          keyword: keywordSelect.current.value,
           createdTime: new Date().getTime(),
         };
 

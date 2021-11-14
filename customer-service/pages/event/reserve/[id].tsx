@@ -1,48 +1,58 @@
 import { useRouter } from "next/router";
-import { useRef } from "react";
+import { MutableRefObject, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../provider";
 import { addReserve, ReserveItem } from "../../../provider/modules/reserve";
 import EventsStyle from "../../styles/Event.module.css";
 import Image from "next/image";
 import { nanoid } from "@reduxjs/toolkit";
+import { requestAddReserve } from "../../../middleware/modules/reserve";
 
 const Reserve = () => {
-  const router = useRouter();
+  // 입력 폼 ref 객체
+  const rezNameInput = useRef() as MutableRefObject<HTMLInputElement>;
+  const rezPhoneInput = useRef() as MutableRefObject<HTMLInputElement>;
+  const seeDateInput = useRef() as MutableRefObject<HTMLInputElement>;
+  const seeTimeSelect = useRef() as MutableRefObject<HTMLSelectElement>;
 
-  const id = router.query.id as string;
-
-  console.log(id);
   // 데이터 배열 가져오기
   const ReserveData = useSelector((state: RootState) => state.reserve.data);
-
-  // ReserveData 가 업데이트 되고 44번줄 푸쉬가 되야하니까 useEffect 를
-  // 사용해서 받아온 이후에 실행 되게 해라
+  // 추가 완료 여부 state 변경감지 및 가져오기
+  const isAddCompleted = useSelector(
+    (state: RootState) => state.reserve.isAddCompleted
+  );
 
   // dispatch 함수 만들기
   const dispatch = useDispatch<AppDispatch>();
 
-  // input ref객체
-  const rezNameInput = useRef<HTMLInputElement>(null);
-  const rezPhoneInput = useRef<HTMLInputElement>(null);
-  const seeDateInput = useRef<HTMLInputElement>(null);
-  const seeTimeSelect = useRef<HTMLSelectElement>(null);
+  // 객체 가져오기
+  const router = useRouter();
 
-  console.log(rezNameInput.current?.value);
+  // event id 가져오기
+  const id = router.query.id as string;
+  console.log(id);
+
+  // isCompleted 값이 변경되면 처리
+  useEffect(() => {
+    // true이면 화면이동
+    isAddCompleted && router.push(`/event/complete/${id}`);
+  }, [isAddCompleted, router, dispatch]);
 
   const handleAddClick = () => {
     const reserveId = ReserveData[0] ? ReserveData[0].id + 1 : 1;
 
     const item: ReserveItem = {
       id: reserveId,
-      rezName: rezNameInput.current ? rezNameInput.current.value : "",
-      rezPhone: rezPhoneInput.current ? rezPhoneInput.current.value : "",
-      seeDate: seeDateInput.current ? seeDateInput.current.value : "",
-      seeTime: seeTimeSelect.current ? seeTimeSelect.current.value : "",
+      rezName: rezNameInput.current.value,
+      rezPhone: rezPhoneInput.current.value,
+      seeDate: seeDateInput.current.value,
+      seeTime: seeTimeSelect.current.value,
       eventId: +id,
     };
-    dispatch(addReserve(item));
-    router.push(`/event/complete/${item.id}`);
+    // redux action
+    // dispatch(addReserve(item));
+    // saga action
+    dispatch(requestAddReserve(item));
   };
 
   return (

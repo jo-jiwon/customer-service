@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // redux store(리덕스 저장소)에 하나의 state를 관리하고 처리할 수 있는 모듈
 // slice에는  state와 reducer가 있음
-// reducer는 state르 변경하는 함수
+// reducer는 state를 변경하는 함수
 
 export interface ReviewItem {
   id: number;
@@ -47,7 +47,7 @@ const initialState: ReviewState = {
   isFetched: false,
   page: 0,
   // pageSize: reviewPageSize ? +reviewPageSize : 6,
-  pageSize: 6,
+  pageSize: 4,
   totalPages: 0,
 };
 
@@ -56,14 +56,15 @@ const reviewSlice = createSlice({
   name: "review", // slice의 이름(state이름)
   initialState, // 이 slice의 state 초기값
   reducers: {
-    // // PayloadAction<payload타입>
-    // // Payload로 item객체를 받음
+    // PayloadAction<payload타입>
+    // Payload로 item객체를 받음
     addReview: (state, action: PayloadAction<ReviewItem>) => {
       const review = action.payload;
       console.log(review);
       state.data.unshift(review);
       state.isAddCompleted = true; // 추가가 되었음으로 표시
     },
+
     // payload 없는 reducer
     // completed 관련된 속성을 삭제함(undefined 상태)
     initialCompleted: (state) => {
@@ -80,6 +81,7 @@ const reviewSlice = createSlice({
       );
       state.isRemoveCompleted = true; // 삭제 되었음을 표시
     },
+
     modifyReview: (state, action: PayloadAction<ReviewItem>) => {
       // 생성해서 넘긴 객체
       const modifyItem = action.payload;
@@ -95,36 +97,16 @@ const reviewSlice = createSlice({
       }
       state.isModifyCompleted = true; // 변경되었음을 표시
     },
-    // initialPhotoItem: (state, action: PayloadAction<ReviewItem>) => {
-    //   const photo = action.payload;
-    //   // 백엔드에서 받아온 데이터
-    //   state.data = [{ ...photo }];
-    // },
+
     // payload값으로 state를 초기화하는 reducer 필요함
     initialReview: (state, action: PayloadAction<ReviewItem[]>) => {
       const reviews = action.payload;
-      //   // 백엔드에서 받아온 데이터
+      // 백엔드에서 받아온 데이터
       state.data = reviews;
-      //   // 데이터를 받아옴으로 값을 남김
+      // 데이터를 받아옴으로 값을 남김
       state.isFetched = true;
     },
-    // addTotalpages: (state) => {
-    //   state.totalPages++;
-    // },
-    // 숫자 페이징
-    // initialPagedReview: (state, action: PayloadAction<ReviewPage>) => {
-    //   //   // 백엔드에서 받아온 데이터
-    //   //   // 컨텐트
-    //   state.data = action.payload.data;
-    //   //   // 페이징 데이터
-    //   state.totalElements = action.payload.totalElements;
-    //   state.totalPages = action.payload.totalPages;
-    //   state.page = action.payload.page;
-    //   state.pageSize = action.payload.pageSize;
-    //   state.isLast = action.payload.isLast;
-    //   //   // 데이터를 받아옴으로 값을 남김
-    //   state.isFetched = true;
-    // },
+
     // 더보기 페이징
     initialNextReview: (state, action: PayloadAction<ReviewPage>) => {
       //   // 백엔드에서 받아온 데이터를 기존데이터 뒤로 합침
@@ -148,7 +130,6 @@ export const {
   modifyReview,
   initialCompleted,
   initialReview,
-  // initialPagedReview,
   initialNextReview,
 } = reviewSlice.actions;
 
