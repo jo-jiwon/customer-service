@@ -14,6 +14,8 @@ const Reserve = () => {
   const rezPhoneInput = useRef() as MutableRefObject<HTMLInputElement>;
   const seeDateInput = useRef() as MutableRefObject<HTMLInputElement>;
   const seeTimeSelect = useRef() as MutableRefObject<HTMLSelectElement>;
+  // dispatch 함수 만들기
+  const dispatch = useDispatch<AppDispatch>();
 
   // 데이터 배열 가져오기
   const ReserveData = useSelector((state: RootState) => state.reserve.data);
@@ -21,9 +23,6 @@ const Reserve = () => {
   const isAddCompleted = useSelector(
     (state: RootState) => state.reserve.isAddCompleted
   );
-
-  // dispatch 함수 만들기
-  const dispatch = useDispatch<AppDispatch>();
 
   // 객체 가져오기
   const router = useRouter();
@@ -35,7 +34,7 @@ const Reserve = () => {
   // isCompleted 값이 변경되면 처리
   useEffect(() => {
     // true이면 화면이동
-    isAddCompleted && router.push(`/event/complete/${id}`);
+    isAddCompleted && router.push(`/event/complete/${ReserveData[0].id}`);
   }, [isAddCompleted, router, dispatch]);
 
   const handleAddClick = () => {
@@ -49,10 +48,13 @@ const Reserve = () => {
       seeTime: seeTimeSelect.current.value,
       eventId: +id,
     };
+
     // redux action
     // dispatch(addReserve(item));
     // saga action
     dispatch(requestAddReserve(item));
+    // console.log(handleAddClick);
+    // router.push(`/event/complete/${item.id}`);
   };
 
   return (
@@ -99,7 +101,6 @@ const Reserve = () => {
             <td>
               <input type="text" className="form-control" ref={rezNameInput} />
             </td>
-            {/* <td>{photoItem.title}</td> */}
           </tr>
           <tr>
             <th>연락처</th>
@@ -111,7 +112,6 @@ const Reserve = () => {
                 maxLength={11}
               />
             </td>
-            {/* <td>{photoItem.description}</td> */}
           </tr>
           <tr>
             <th>상담날짜</th>

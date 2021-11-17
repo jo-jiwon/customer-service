@@ -1,10 +1,11 @@
 import reserveReducer, {
   addReserve,
   initialCompleted,
+  initialReserve,
 } from "../../provider/modules/reserve";
 import { createAction, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { ReserveItem } from "../../provider/modules/reserve";
-import { call, put, takeEvery } from "@redux-saga/core/effects";
+import { call, put, takeEvery, takeLatest } from "@redux-saga/core/effects";
 import api, {
   ReserveItemRequest,
   ReserveItemResponse,
@@ -15,6 +16,11 @@ import { addAlert } from "../../provider/modules/alert";
 //-------------------------- saga action 생성
 export const requestAddReserve = createAction<ReserveItem>(
   `${reserveReducer.name}/requestAddReserve`
+);
+
+// review를 가져오는 action
+export const requestFetchReserve = createAction(
+  `${reserveReducer.name}/requestFetchReserve`
 );
 
 //-------------------------- saga action 처리
@@ -49,6 +55,9 @@ function* addData(action: PayloadAction<ReserveItem>) {
       eventId: result.data.eventId,
     };
 
+    // dispatch
+    yield put(addReserve(reserveItem));
+
     // alert박스 추가
     yield put(
       addAlert({
@@ -74,8 +83,33 @@ function* addData(action: PayloadAction<ReserveItem>) {
   }
 }
 
+function* fetchData() {
+  yield console.log("--fetchData--");
+
+  // 백엔드에서 데이터 받아오기
+  const result: AxiosResponse<ReserveItemResponse[]> = yield call(api.fetch);
+
+  // 응답데이터배열을 액션페이로드 배열로 변환
+  const reserve = result.data.map(
+    (item) =>
+      ({
+        id: item.id,
+        rezName: item.rezName,
+        rezPhone: item.rezPhone,
+        seeDate: item.seeDate,
+        seeTime: item.seeTime,
+        eventId: item.eventId,
+      } as ReserveItem)
+  );
+  // state 초기화 reducer 실행
+  yield put(initialReserve(reserve));
+}
+
 //-------------------------- saga action 감지
 export default function* reserveSaga() {
   // 추가 처리
   yield takeEvery(requestAddReserve, addData);
+
+  // 조회 처리
+  yield takeLatest(requestFetchReserve, fetchData);
 }

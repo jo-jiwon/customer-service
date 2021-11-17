@@ -47,7 +47,7 @@ const initialState: ReviewState = {
   isFetched: false,
   page: 0,
   // pageSize: reviewPageSize ? +reviewPageSize : 6,
-  pageSize: 4,
+  pageSize: 2,
   totalPages: 0,
 };
 

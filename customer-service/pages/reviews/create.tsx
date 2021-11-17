@@ -58,8 +58,6 @@ const ReviewCreate = () => {
 
         // saga action
         // dispatch(requestAddReview(item)); // 전체조회
-        // dispatch(requestAddReviewPaging(item)); // 넘버 페이징
-
         dispatch(requestAddReviewNext(item)); // 더보기 페이징
 
         // router.push("/reviews");

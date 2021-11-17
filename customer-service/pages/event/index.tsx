@@ -77,7 +77,7 @@ const Event = ({ events }: IndexProp) => {
 
 export async function getServerSideProps() {
   const res = await axios.get<EventData[]>(
-    `https://jsonplaceholder.typicode.com/photos?_start=0&_end=10`
+    `https://jsonplaceholder.typicode.com/photos?_start=0&_end=6`
   );
   const events = res.data;
 

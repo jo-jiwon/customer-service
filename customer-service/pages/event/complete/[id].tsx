@@ -1,14 +1,16 @@
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { requestFetchReserve } from "../../../middleware/modules/reserve";
 import { AppDispatch, RootState } from "../../../provider";
 import EventsStyle from "../../styles/Event.module.css";
 
 const Complete = () => {
   const router = useRouter();
-
   const id = router.query.id as string;
+  console.log(id);
 
-  const reserve = useSelector((state: RootState) =>
+  const reserveItem = useSelector((state: RootState) =>
     state.reserve.data.find((item) => item.id === +id)
   );
 
@@ -19,19 +21,19 @@ const Complete = () => {
         <tbody>
           <tr>
             <th>이름</th>
-            <td>{reserve && reserve?.rezName}</td>
+            <td>{reserveItem?.rezName}</td>
           </tr>
           <tr>
             <th>연락처</th>
-            <td>{reserve?.rezPhone}</td>
+            <td>{reserveItem?.rezPhone}</td>
           </tr>
           <tr>
             <th>상담날짜</th>
-            <td>{reserve?.seeDate}</td>
+            <td>{reserveItem?.seeDate}</td>
           </tr>
           <tr>
             <th>상담시간</th>
-            <td>{reserve?.seeTime}</td>
+            <td>{reserveItem?.seeTime}</td>
           </tr>
         </tbody>
       </table>

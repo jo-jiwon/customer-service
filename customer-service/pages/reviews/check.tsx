@@ -17,7 +17,9 @@ const Check = () => {
       price: priceInput.current.value,
       clinic: clinicInput.current.value,
     };
+    // redux action
     dispatch(addCheck(data));
+    router.push(`/reviews/create`);
   };
 
   return (
@@ -105,7 +107,6 @@ const Check = () => {
           <button
             className="btnSize btn btnBg me-1"
             onClick={() => {
-              router.push(`/reviews/create`);
               createCheck();
             }}
           >

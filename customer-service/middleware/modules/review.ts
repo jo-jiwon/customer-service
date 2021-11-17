@@ -17,6 +17,8 @@ import api, {
 } from "../../api/review";
 import { AxiosResponse } from "axios";
 import { addAlert } from "../../provider/modules/alert";
+import { dataUrlToFile } from "../../lib/string";
+import fileApi from "../../api/file";
 
 export interface PageRequest {
   page: number;
@@ -70,13 +72,29 @@ function* addDataNext(action: PayloadAction<ReviewItem>) {
     // payload 객체
     const reviewItemPayload = action.payload;
 
+    // s3업로드 처리
+    // 1. dataurl -> file 변환
+    const file: File = yield call(
+      dataUrlToFile,
+      reviewItemPayload.reviewPhotoUrl,
+      reviewItemPayload.fileName,
+      reviewItemPayload.fileType
+    );
+
+    // 2. form data 객체 생성
+    const formFile = new FormData();
+    formFile.set("file", file);
+
+    // 3. multipart/form-data로 업로드
+    const fileUrl: AxiosResponse<string> = yield call(fileApi.upload, formFile);
+
     // rest api로 보낼 요청객체
     const reviewItemRequest: ReviewItemRequest = {
       title: reviewItemPayload.title,
       description: reviewItemPayload.description
         ? reviewItemPayload.description
         : "",
-      reviewPhotoUrl: reviewItemPayload.reviewPhotoUrl,
+      reviewPhotoUrl: fileUrl.data,
       fileType: reviewItemPayload.fileType,
       fileName: reviewItemPayload.fileName,
       clinic: reviewItemPayload.clinic,

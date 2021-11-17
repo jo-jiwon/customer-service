@@ -23,6 +23,12 @@ const reserveApi = {
     axios.get<ReserveItemResponse>(
       `${process.env.NEXT_PUBLIC_API_BASE}/reserve/${id}`
     ),
+
+  fetch: () =>
+    axios.get<ReserveItemResponse[]>(
+      `${process.env.NEXT_PUBLIC_API_BASE}/event/complete`
+    ),
+
   add: (reserveItem: ReserveItemRequest) =>
     axios.post<ReserveItemResponse>(
       `${process.env.NEXT_PUBLIC_API_BASE}/reserves`,

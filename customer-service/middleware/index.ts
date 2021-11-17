@@ -1,4 +1,5 @@
 import { fork } from "redux-saga/effects";
+import reserveSaga from "./modules/reserve";
 import reviewSaga from "./modules/review";
 
 // 최상위 Saga를 내보내기함
@@ -6,5 +7,6 @@ import reviewSaga from "./modules/review";
 // 기능별 각각의 saga action별로 처리할 saga들을 넣어줌
 export default function* rootSaga() {
   // 비동기로 하위 사가를 처리함
+  yield fork(reserveSaga);
   yield fork(reviewSaga);
 }
