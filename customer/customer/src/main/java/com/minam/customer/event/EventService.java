@@ -20,5 +20,15 @@ public class EventService {
 	@RabbitListener(queues = "test.hello.1")
 	public void receiveEvent(Event event) {
 		System.out.println(event);
+		saveEvent(event);
+	}
+
+	public Event saveEvent(Event resEvent) {
+		Event event = Event.builder().title(resEvent.getTitle()).description(resEvent.getDescription())
+				.clinic(resEvent.getClinic()).keyword(resEvent.getKeyword()).price(resEvent.getPrice())
+				.photoUrl(resEvent.getPhotoUrl()).fileType(resEvent.getFileType()).fileName(resEvent.getFileName())
+				.createdTime(resEvent.getCreatedTime()).build();
+		repo.save(event);
+		return event;
 	}
 }
