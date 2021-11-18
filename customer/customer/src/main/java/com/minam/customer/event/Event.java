@@ -30,4 +30,6 @@ public class Event {
 	private String clinic;
 	private String keyword;
 	private String price;
+
+	private Long createdTime;
 }

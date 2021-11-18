@@ -16,11 +16,13 @@ import com.minam.customer.lib.TextProcesser;
 @RestController
 public class ReserveController {
 	private ReserveRepository repo;
+	private ReserveService service;
 
 	// 의존성 주입(Dependency)
 	@Autowired
-	public ReserveController(ReserveRepository repo) {
+	public ReserveController(ReserveRepository repo, ReserveService service) {
 		this.repo = repo;
+		this.service = service;
 	}
 
 	// reserve 목록조회
@@ -47,6 +49,9 @@ public class ReserveController {
 
 		// reserve 목록객체 추가
 		Reserve reserveSaved = repo.save(reserveItem);
+
+		// sendrabbit
+		service.sendReserve(reserveItem);
 
 		// 리소스 생성됨
 		res.setStatus(HttpServletResponse.SC_CREATED);

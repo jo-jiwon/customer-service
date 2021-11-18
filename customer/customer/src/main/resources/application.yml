@@ -26,3 +26,7 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
+  rabbitmq:
+    addresses: amqps://b-f5b27dbc-5576-4d4f-849d-03c019cced61.mq.ap-northeast-2.amazonaws.com:5671
+    username: rabbitmq
+    password: password123!
