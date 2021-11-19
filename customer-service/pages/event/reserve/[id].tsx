@@ -7,8 +7,27 @@ import EventsStyle from "../../styles/Event.module.css";
 import Image from "next/image";
 import { nanoid } from "@reduxjs/toolkit";
 import { requestAddReserve } from "../../../middleware/modules/reserve";
+import { GetServerSideProps } from "next";
+import axios from "axios";
 
-const Reserve = () => {
+interface EventData {
+  id: number;
+  title: string;
+  photoUrl: string;
+  fileType: string;
+  fileName: string;
+  description: string;
+  clinic: string;
+  keyword: string;
+  price: string;
+  createdTime: string;
+}
+
+interface DetailProp {
+  event: EventData;
+}
+
+const Reserve = ({ event }: DetailProp) => {
   // 입력 폼 ref 객체
   const rezNameInput = useRef() as MutableRefObject<HTMLInputElement>;
   const rezPhoneInput = useRef() as MutableRefObject<HTMLInputElement>;
@@ -51,25 +70,21 @@ const Reserve = () => {
 
     // redux action
     // dispatch(addReserve(item));
+
     // saga action
     dispatch(requestAddReserve(item));
-    // console.log(handleAddClick);
+
     // router.push(`/event/complete/${item.id}`);
   };
 
   return (
     <div className="width500">
       <h2 className="title text-center">상담 예약</h2>
-      {/* {!photoItem && (
-          <div className="text-center my-5">데이터가 없습니다.</div>
-        )} */}
-      {/* {photoItem && ( */}
-
       <div className="card mb-3">
         <Image
-          src="https://via.placeholder.com/150/56a8c2"
+          src={event.photoUrl}
           className="card-img-top"
-          alt=""
+          alt={event.title}
           layout="responsive"
           objectFit="cover"
           width={180}
@@ -77,18 +92,18 @@ const Reserve = () => {
         />
         <div className="card-body d-flex">
           <div className="card-title my-auto" style={{ width: "50%" }}>
-            눈 쌍커풀 수술
+            {event.title}
           </div>
           <div
             className="d-flex justify-content-end my-auto"
             style={{ width: "50%" }}
           >
-            <div className="card-text me-3">아이웰 성형외과</div>
+            <div className="card-text me-3">{event.clinic}</div>
             <div
               className="card-text justify-content-end"
               style={{ fontWeight: "bold" }}
             >
-              97만원
+              {event.price}
             </div>
           </div>
         </div>
@@ -167,6 +182,17 @@ const Reserve = () => {
       </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const id = context.params?.id;
+  // const a = id;
+  const res = await axios.get<EventData[]>(
+    `http://localhost:8080/events/${id}`
+  );
+  const event = res.data;
+
+  return { props: { event } };
 };
 
 export default Reserve;

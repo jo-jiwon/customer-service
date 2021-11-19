@@ -5,11 +5,16 @@ import router from "next/router";
 import axios from "axios";
 
 interface EventData {
-  albumId: number;
   id: number;
   title: string;
-  url: string;
-  thumbnailUrl: string;
+  photoUrl: string;
+  fileType: string;
+  fileName: string;
+  description: string;
+  clinic: string;
+  keyword: string;
+  price: string;
+  createdTime: string;
 }
 
 interface IndexProp {
@@ -37,7 +42,7 @@ const Event = ({ events }: IndexProp) => {
               <Card.Body className="d-flex">
                 <Card.Img
                   className="me-3"
-                  src={events.thumbnailUrl}
+                  src={events.photoUrl}
                   alt={events.title}
                   style={{ width: "150px", height: "150px," }}
                 />
@@ -45,11 +50,13 @@ const Event = ({ events }: IndexProp) => {
                 <div className={EventsStyles.title}>
                   <div className="my-3">
                     <Card.Text style={{ fontWeight: "bold" }}>
-                      아이웰 남자 눈 성형
+                      {events.title}
                     </Card.Text>
-                    <Card.Text>아이웰 남자눈_남자니까남자담게!</Card.Text>
-                    <Card.Text>아이웰 성형외과</Card.Text>
-                    <Card.Text style={{ fontWeight: "bold" }}>97만원</Card.Text>
+                    <Card.Text>{events.description}</Card.Text>
+                    <Card.Text>{events.clinic}</Card.Text>
+                    <Card.Text style={{ fontWeight: "bold" }}>
+                      {events.price}
+                    </Card.Text>
                   </div>
                 </div>
               </Card.Body>
@@ -76,9 +83,7 @@ const Event = ({ events }: IndexProp) => {
 };
 
 export async function getServerSideProps() {
-  const res = await axios.get<EventData[]>(
-    `https://jsonplaceholder.typicode.com/photos?_start=0&_end=6`
-  );
+  const res = await axios.get<EventData[]>(`http://localhost:8080/events`);
   const events = res.data;
 
   return { props: { events } };

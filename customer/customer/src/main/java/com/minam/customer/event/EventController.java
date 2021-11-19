@@ -3,7 +3,6 @@ package com.minam.customer.event;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +21,7 @@ public class EventController {
 	}
 
 	// event 목록조회
-	@Cacheable(value = "event-list", key = "'all'")
+//	@Cacheable(value = "event-list", key = "'all'")
 	@GetMapping(value = "/events")
 	public List<Event> getEvents() throws InterruptedException {
 
